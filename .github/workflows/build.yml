@@ -1,0 +1,16 @@
+name: Build
+on: [pull_request]
+
+jobs:
+  build:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Clone
+      uses: actions/checkout@v2
+
+    - name: Build Docker Image
+      run: |
+        docker build -t flat-manager-docker:latest .
+        docker run --rm -i -v ./.hadolint.yaml:/root/.config/hadolint.yaml hadolint/hadolint < Dockerfile
