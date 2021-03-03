@@ -7,7 +7,7 @@ on:
     - cron:  '0 0 1 * *'
 jobs:
   build:
-    name: Build flat-manager-docker
+    name: Build & Publish Image
     runs-on: ubuntu-latest
 
     steps:
@@ -17,5 +17,5 @@ jobs:
     - name: Build Docker Image
       run: |
         docker login -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKER_PASSWORD }}"
-        docker build -t elementary/flat-manager-:latest .
-        docker push elementary/flat-manager-:latest
+        docker build -t elementary/flat-manager-docker:latest .
+        docker push elementary/flat-manager-docker:latest
