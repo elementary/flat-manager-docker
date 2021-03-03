@@ -1,0 +1,47 @@
+{
+  "repos": {
+    "stable": {
+      "path": "repo",
+      "collection-id": "org.test.Stable",
+      "suggested-repo-name": "testrepo",
+      "runtime-repo-url": "https://dl.flathub.org/repo/flathub.flatpakrepo",
+      "gpg-key": null,
+      "base-url": null,
+      "subsets": {
+        "all": {
+          "collection-id": "org.test.Stable",
+          "base-url": null
+        },
+        "free": {
+          "collection-id": "org.test.Stable.test",
+          "base-url": null
+        }
+      }
+    },
+    "beta": {
+      "path": "beta-repo",
+      "collection-id": "org.test.Beta",
+      "suggested-repo-name": "testrepo-beta",
+      "runtime-repo-url": "https://dl.flathub.org/repo/flathub.flatpakrepo",
+      "gpg-key": null,
+      "subsets": {
+        "all": {
+          "collection-id": "org.test.Beta",
+          "base-url": null
+        },
+        "free": {
+          "collection-id": "org.test.Beta.test",
+          "base-url": null
+        }
+      }
+    }
+  },
+  "port": 8080,
+  "delay-update-secs": 10,
+  "database-url": "postgres://%2Fvar%2Frun%2Fpostgresql/repo",
+  "build-repo-base": "build-repo",
+  "build-gpg-key": null,
+  "gpg-homedir": null,
+  "secret": "thisisasecret",
+  "host": "0.0.0.0"
+}
