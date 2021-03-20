@@ -6,7 +6,7 @@ set -o errtrace
 if [ -f $STARTUP_SCRIPT ]; then
     echo "Running startup file.";
     chmod +x $STARTUP_SCRIPT;
-    $STARTUP_SCRIPT;
+    sh $STARTUP_SCRIPT;
 fi
 
 if [ ! -f $REPO_CONFIG ]; then
