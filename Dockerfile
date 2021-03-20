@@ -12,8 +12,19 @@ RUN cd /root/.cargo/git/checkouts/flat-manager*/* && \
 
 FROM alpine:edge
 
-RUN apk add libpq
-RUN apk add flatpak
+ARG S3FS_VERSION=v1.89
+
+RUN apk --update add fuse alpine-sdk automake autoconf libxml2-dev fuse-dev curl-dev git bash;
+RUN git clone https://github.com/s3fs-fuse/s3fs-fuse.git; \
+ cd s3fs-fuse; \
+ git checkout tags/${S3FS_VERSION}; \
+ ./autogen.sh; \
+ ./configure --prefix=/usr; \
+ make; \
+ make install; \
+ rm -rf /var/cache/apk/*;
+
+RUN apk --update add flatpak libpq
 
 COPY --from=builder /root/bin/ /usr/bin
 COPY --from=builder /root/etc /etc/flat-manager
@@ -25,6 +36,7 @@ RUN mkdir -p /var/run/postgresql
 
 ENV HOME /var/run/flat-manager
 ENV REPO_CONFIG $HOME/config.json
+ENV STARTUP_SCRIPT $HOME/startup.sh
 ENV RUST_LOG info
 
 RUN addgroup flatmanager &&\
