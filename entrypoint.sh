@@ -5,7 +5,6 @@ set -o errtrace
 
 if [ -f $STARTUP_SCRIPT ]; then
     echo "Running startup file.";
-    chmod +x $STARTUP_SCRIPT;
     sh $STARTUP_SCRIPT;
 fi
 
