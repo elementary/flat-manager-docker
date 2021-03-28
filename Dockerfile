@@ -5,7 +5,7 @@ WORKDIR /root
 RUN apk add cargo rust
 RUN apk add postgresql-dev
 
-RUN cargo --quiet install --git https://github.com/flatpak/flat-manager.git --tag=0.3.7 --root=/root
+RUN cargo --quiet install --debug --git https://github.com/flatpak/flat-manager.git --tag=0.3.7 --root=/root
 
 RUN cd /root/.cargo/git/checkouts/flat-manager*/* && \
     install -m 644 -D -t /root/etc example-config.json
