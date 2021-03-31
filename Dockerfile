@@ -2,37 +2,29 @@ FROM alpine:edge AS builder
 
 WORKDIR /root
 
-RUN apk add cargo rust
-RUN apk add postgresql-dev
+RUN apk --update add cargo fuse fuse-dev postgresql-dev rust;
 
-RUN cargo --quiet install --debug --git https://github.com/flatpak/flat-manager.git --tag=0.3.7 --root=/root
+RUN cargo --quiet install --git https://github.com/flatpak/flat-manager.git --tag=0.3.7 --root=/root
+RUN cargo --quiet install --git https://github.com/kahing/catfs.git --tag=v0.8.0 --root=/root
 
 RUN cd /root/.cargo/git/checkouts/flat-manager*/* && \
     install -m 644 -D -t /root/etc example-config.json
 
 FROM alpine:edge
 
-ARG S3FS_VERSION=v1.89
+RUN apk --update add bash fuse fuse-dev flatpak libpq;
 
-RUN apk --update add fuse alpine-sdk automake autoconf libxml2-dev fuse-dev curl-dev git bash;
-RUN git clone https://github.com/s3fs-fuse/s3fs-fuse.git; \
- cd s3fs-fuse; \
- git checkout tags/${S3FS_VERSION}; \
- ./autogen.sh; \
- ./configure --prefix=/usr; \
- make; \
- make install; \
- rm -rf /var/cache/apk/*;
+RUN wget https://github.com/kahing/goofys/releases/download/v0.24.0/goofys; \
+  mv goofys /usr/bin; \
+  chown root:root /usr/bin/goofys; \
+  chmod 644 /usr/bin/goofys; \
+  chmod +x /usr/bin/goofys;
 
-RUN apk --update add flatpak libpq
-
-COPY --from=builder /root/bin/ /usr/bin
+COPY --from=builder /root/bin /usr/bin
 COPY --from=builder /root/etc /etc/flat-manager
 
 ADD entrypoint.sh /usr/bin
 RUN chown root:root /usr/bin/entrypoint.sh && chmod 755 /usr/bin/entrypoint.sh
-
-RUN mkdir -p /var/run/postgresql
 
 ENV HOME /var/run/flat-manager
 ENV REPO_CONFIG $HOME/config.json
