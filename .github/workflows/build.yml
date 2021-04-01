@@ -15,6 +15,7 @@ jobs:
       matrix:
         image:
           - flat-manager
+          - flat-manager-client
 
     steps:
     - name: Clone
