@@ -14,6 +14,10 @@ for running in kubernetes, and mount an S3 endpoint for file storage.
 Most of this work is based of [this WIP PR](https://github.com/flatpak/flat-manager/pull/20). Once that is merged, this
 repository will go down in size a lot.
 
+## Images
+
+- `flat-manager` - This is the Rust `flat-manager` command
+
 ## Configuration
 
 You will want to make a custom flat-manager configuration at place it at `/var/run/flat-manager/config.json`.
@@ -70,10 +74,9 @@ Here is the example config:
 
 ### S3 Repository
 
-You can also mount an S3 location in the container to statically host the repository.
-
-**Warning** `s3fs-fuse` does not support hard links, so performance will be slower. You should only be doing this if
-you have a large repository that needs to scale, and you don't want to stand up your own hardware.
+You can also mount an S3 location in the container to statically host the repository. **Warning** this comes with a lot
+of warnings and can possibly break at any time. Use at your own risk. [`goofys`](https://github.com/kahing/goofys) and
+[`catfs`](https://github.com/kahing/catfs) are installed by default in the `flat-manager` image.
 
 **NOTE** You will also need to run the container with `--privileged` or you will end up getting an error like so
 ```
@@ -87,7 +90,7 @@ startup. For instance:
 export AWSACCESSKEYID="aws access key"
 export AWSSECRETACCESSKEY="aws secret key"
 
-mkdir -p "$HOME/build-repo"
+mkdir -p "$HOME/repository"
 
-/usr/bin/s3fs flatpak "$HOME/build-repo" -o nosuid,nonempty,nodev,default_acl=public-read,retries=5
+/usr/bin/goofys flatpak-repository "$HOME/repository"
 ```
